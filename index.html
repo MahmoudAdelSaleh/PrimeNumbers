@@ -7,7 +7,6 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-KMJD4H272E');
 </script>
 <meta charset="UTF-8"/>
@@ -18,13 +17,7 @@
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js');
   }
-
-window.addEventListener('appinstalled', () => {
-  gtag('event', 'pwa_installed');
-});
-window.addEventListener('appinstalled', () => {
-  gtag('event', 'pwa_installed');
-});
+  window.addEventListener('appinstalled', () => { gtag('event', 'pwa_installed'); });
 </script>
 <style>
 body{font-family:'Calibri',Tahoma,sans-serif;direction:rtl;text-align:center;margin:0;padding:10px;color:#4B0082;transition:background 1s;}
@@ -38,6 +31,8 @@ button{padding:8px 16px;margin:5px;font-size:16px;font-weight:bold;cursor:pointe
 #factorsBox{direction:ltr;display:inline-block;background:#ccc;color:#9370DB;border-radius:6px;font-weight:bold;margin-top:10px;font-size:18px;padding:4px 8px;white-space:nowrap;}
 #factorsBox .prime{padding:2px 4px;border-radius:4px;display:inline-flex;color:white;font-size:16px;font-weight:bold;min-width:unset;}
 footer{margin-top:20px;padding:10px;background:#333;color:white;font-size:16px;border-radius:8px;font-weight:bold;}
+.link-button{display:inline-block;padding:8px 16px;background:#4CAF50;color:white;text-decoration:none;border-radius:6px;font-weight:bold;margin-top:10px;}
+.link-button:hover{background:#45a049;}
 </style>
 </head>
 <body>
@@ -66,7 +61,16 @@ footer{margin-top:20px;padding:10px;background:#333;color:white;font-size:16px;b
 <input type="number" id="z" value="120">
 <button onclick="fZ()">حلل</button>
 <div id="factorsBox"></div></div>
-<footer><marquee direction="right" scrollamount="5">محمود عادل صالح – معلم رياضيات <a href="https://www.facebook.com/barghouthean?mibextid=ZbWKwL" target="_blank" style="margin-right:10px;"><img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" width="20" style="vertical-align:middle;"></a></marquee></footer>
+
+<!-- ✅ رابط شجرة العوامل -->
+<div>
+  <a href="tree_factors.html" class="link-button">🌿 عرض شجرة العوامل</a>
+</div>
+
+<footer><marquee direction="right" scrollamount="5">محمود عادل صالح – معلم رياضيات 
+<a href="https://www.facebook.com/barghouthean?mibextid=ZbWKwL" target="_blank" style="margin-right:10px;">
+<img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" width="20" style="vertical-align:middle;">
+</a></marquee></footer>
 <script>
 function iP(n){if(n<=1)return!1;if(n===2)return!0;if(n%2===0)return!1;for(let i=3;i<=Math.sqrt(n);i+=2)if(n%i===0)return!1;return!0;}
 function cD(d){switch(d){case 2:return"purple";case 3:return"green";case 5:return"blue";case 7:return"orange";case 9:return"red";case 1:return"brown";default:return"#555";}}
@@ -76,39 +80,7 @@ function gPA(){let k=+document.getElementById('k').value,c=0,n=1;while(c<k){n++;
 function cP(){let m=+document.getElementById('m').value,r=iP(m)?"عدد أولي":"ليس عددًا أوليًا";document.getElementById('checkBox').innerHTML=`${pS(m)} : ${r}`;}
 function fSP(){let x=+document.getElementById('x').value,l=x-1,u=x+1;while(l>1&&!iP(l))l--;while(!iP(u))u++;document.getElementById('surroundingBox').innerHTML=`الأقرب: ${pS(l)} و ${pS(u)}`;}
 function fR(){let y=+document.getElementById('y').value;if(iP(y)){let c=0;for(let i=2;i<=y;i++)if(iP(i))c++;document.getElementById('rankBox').innerHTML=`${pS(y)} هو العدد الأولي رقم ${c}`;}else{let l=y-1,u=y+1;while(l>1&&!iP(l))l--;while(!iP(u))u++;let lr=0,ur=0,c=0,i=2;while(i<=u){if(iP(i)){c++;if(i==l)lr=c;if(i==u)ur=c;}i++;}document.getElementById('rankBox').innerHTML=`${y} ليس أوليًا.<br>الأقرب: ${pS(l)} رتبته ${lr} ، و ${pS(u)} رتبته ${ur}`;}}
-
-function fZ(){
-  let z=+document.getElementById('z').value, n=z, f=[];
-  
-  // التحليل الأولي (يظل كما هو)
-  for(let i=2; i<=n; i++){
-    while(n%i === 0){
-      f.push(i);
-      n /= i;
-    }
-  }
-  
-  // التعديل الذكي للأسس (الجديد)
-  let result = [];
-  let current = f[0], count = 1;
-  
-  for(let i=1; i<=f.length; i++){
-    if(f[i] === current){
-      count++;
-    } else {
-      result.push(
-        count > 1 
-          ? `${pS(current)}<sup>${count}</sup>` 
-          : pS(current)
-      );
-      current = f[i];
-      count = 1;
-    }
-  }
-  
-  document.getElementById('factorsBox').innerHTML = `${z} = ${result.join(' × ')}`;
-}
-
+function fZ(){let z=+document.getElementById('z').value, n=z, f=[];for(let i=2;i<=n;i++){while(n%i === 0){f.push(i);n /= i;}}let result = [];let current = f[0], count = 1;for(let i=1; i<=f.length; i++){if(f[i] === current){count++;} else {result.push(count > 1 ? `${pS(current)}<sup>${count}</sup>` : pS(current));current = f[i];count = 1;}}document.getElementById('factorsBox').innerHTML = `${z} = ${result.join(' × ')}`;}
 let cs=["#000000","#B9F2FF"],ix=0;setInterval(()=>{document.body.style.background=cs[ix];ix=(ix+1)%cs.length;},6000);
 </script>
 </body>
