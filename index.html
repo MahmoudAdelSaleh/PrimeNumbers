@@ -76,7 +76,39 @@ function gPA(){let k=+document.getElementById('k').value,c=0,n=1;while(c<k){n++;
 function cP(){let m=+document.getElementById('m').value,r=iP(m)?"عدد أولي":"ليس عددًا أوليًا";document.getElementById('checkBox').innerHTML=`${pS(m)} : ${r}`;}
 function fSP(){let x=+document.getElementById('x').value,l=x-1,u=x+1;while(l>1&&!iP(l))l--;while(!iP(u))u++;document.getElementById('surroundingBox').innerHTML=`الأقرب: ${pS(l)} و ${pS(u)}`;}
 function fR(){let y=+document.getElementById('y').value;if(iP(y)){let c=0;for(let i=2;i<=y;i++)if(iP(i))c++;document.getElementById('rankBox').innerHTML=`${pS(y)} هو العدد الأولي رقم ${c}`;}else{let l=y-1,u=y+1;while(l>1&&!iP(l))l--;while(!iP(u))u++;let lr=0,ur=0,c=0,i=2;while(i<=u){if(iP(i)){c++;if(i==l)lr=c;if(i==u)ur=c;}i++;}document.getElementById('rankBox').innerHTML=`${y} ليس أوليًا.<br>الأقرب: ${pS(l)} رتبته ${lr} ، و ${pS(u)} رتبته ${ur}`;}}
-function fZ(){let z=+document.getElementById('z').value,n=z,f=[];for(let i=2;i<=n;i++){while(n%i===0){f.push(i);n/=i;}}document.getElementById('factorsBox').innerHTML=`${z} = `+f.map(pS).join(' × ');}
+
+function fZ(){
+  let z=+document.getElementById('z').value, n=z, f=[];
+  
+  // التحليل الأولي (يظل كما هو)
+  for(let i=2; i<=n; i++){
+    while(n%i === 0){
+      f.push(i);
+      n /= i;
+    }
+  }
+  
+  // التعديل الذكي للأسس (الجديد)
+  let result = [];
+  let current = f[0], count = 1;
+  
+  for(let i=1; i<=f.length; i++){
+    if(f[i] === current){
+      count++;
+    } else {
+      result.push(
+        count > 1 
+          ? `${pS(current)}<sup>${count}</sup>` 
+          : pS(current)
+      );
+      current = f[i];
+      count = 1;
+    }
+  }
+  
+  document.getElementById('factorsBox').innerHTML = `${z} = ${result.join(' × ')}`;
+}
+
 let cs=["#000000","#B9F2FF"],ix=0;setInterval(()=>{document.body.style.background=cs[ix];ix=(ix+1)%cs.length;},6000);
 </script>
 </body>
