@@ -18,6 +18,13 @@
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js');
   }
+
+window.addEventListener('appinstalled', () => {
+  gtag('event', 'pwa_installed');
+});
+window.addEventListener('appinstalled', () => {
+  gtag('event', 'pwa_installed');
+});
 </script>
 <style>
 body{font-family:'Calibri',Tahoma,sans-serif;direction:rtl;text-align:center;margin:0;padding:10px;color:#4B0082;transition:background 1s;}
