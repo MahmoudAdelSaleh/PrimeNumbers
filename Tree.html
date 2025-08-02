@@ -108,7 +108,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
 
 <script>
-// نفس الدوال كما هي ...
+// دوالك كما هي تمامًا
 function goBack() {
   window.location.href = 'index.html';
 }
@@ -237,6 +237,23 @@ function drawLines(){
     });
   }
 }
+
+// ✅ تسجيل Service Worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(function(reg) {
+      console.log('✅ Service worker مسجل:', reg);
+    })
+    .catch(function(error) {
+      console.log('❌ فشل تسجيل service worker:', error);
+    });
+}
+
+// ✅ منع الرجوع بزر العودة
+history.pushState(null, document.title, location.href);
+window.addEventListener('popstate', function () {
+  history.pushState(null, document.title, location.href);
+});
 </script>
 </body>
 </html>
