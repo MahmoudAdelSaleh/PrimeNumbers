@@ -1,7 +1,8 @@
 {
-  "name": "PrimeNumbers",
-  "short_name": "PrimeNumbers",
-  "start_url": ".",
+  "name": "شجرة العوامل والأعداد الأولية",
+  "short_name": "العوامل",
+  "start_url": "/index.html",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#4B0082",
