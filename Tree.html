@@ -86,11 +86,14 @@
   <br>
   <button onclick="saveAsImage()">📷 حفظ كصورة</button>
   <button onclick="showFactors()">عرض النتيجة</button>
+  <button onclick="goBack()">🔙 رجوع لصفحة الأعداد الأولية</button>
 </div>
 
 <div class="tree" id="treeContainer">
   <svg class="svg-lines"></svg>
   <div id="generatedTree"></div>
+  <br>
+  <button onclick="window.location.href='http://mahmoudadelsaleh.github.io/PrimeNumbers/tree_factors.html'">🪄 رجوع</button>
 </div>
 
 <div id="example" class="example"></div>
@@ -105,6 +108,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
 
 <script>
+// نفس الدوال كما هي ...
+function goBack() {
+  window.location.href = 'index.html';
+}
 function saveAsImage() {
   const tree = document.getElementById('treeContainer');
   domtoimage.toPng(tree)
@@ -118,7 +125,6 @@ function saveAsImage() {
       console.error('خطأ في الحفظ كصورة!', error);
     });
 }
-
 function isPrime(n) {
   if (n <= 1) return false;
   if (n <= 3) return true;
@@ -127,47 +133,46 @@ function isPrime(n) {
     if (n % i === 0 || n % (i+2) === 0) return false;
   return true;
 }
-
-function findBalancedFactors(n) {
-  let sqrt = Math.floor(Math.sqrt(n));
-  for (let i = sqrt; i >= 2; i--)
-    if (n % i === 0) return [i, n/i];
-  return null;
+function getFactors(n) {
+  let factors = [];
+  for (let i = 2; i <= n/2; i++) {
+    if (n % i === 0) factors.push(i);
+  }
+  return factors;
 }
-
 function getColorForPrime(n) {
   const colors = {2:'#3498db',3:'#e67e22',5:'#16a085',7:'#8e44ad',11:'#c0392b',13:'#d35400',17:'#27ae60'};
   return colors[n] || '#2c3e50';
 }
-
 function buildFactorTree(n) {
   let levels = [];
-  let currentLevel = [{ value: n, hasFakeChildren: false }];
+  let currentLevel = [{ value: n }];
   levels.push(currentLevel);
 
   while (true) {
     let nextLevel = [];
     let changed = false;
+
     for (let node of currentLevel) {
       if (isPrime(node.value)) {
-        node.hasFakeChildren = true;
-        nextLevel.push({ value: '', isFake: true }, { value: '', isFake: true });
+        continue;
       } else {
-        let factors = findBalancedFactors(node.value);
-        if (factors) {
-          let sorted = factors[0] > factors[1] ? [factors[0], factors[1]] : [factors[1], factors[0]];
-          nextLevel.push({ value: sorted[0], hasFakeChildren: false }, { value: sorted[1], hasFakeChildren: false });
+        let factors = getFactors(node.value);
+        if (factors.length >= 1) {
+          let smallest = factors[0];
+          let largest = factors[factors.length - 1];
+          nextLevel.push({ value: largest }, { value: smallest });
           changed = true;
         }
       }
     }
+
     if (!changed) break;
     currentLevel = nextLevel;
     levels.push(currentLevel);
   }
   return levels;
 }
-
 function showFactors() {
   const num = parseInt(document.getElementById('numberInput').value);
   if (!num || num < 2) return;
@@ -180,9 +185,7 @@ function showFactors() {
     html += `<div class="level">`;
     level.forEach(node => {
       let style = `width:${size}px;height:${size}px;font-size:${size/2}px;`;
-      if (node.isFake) {
-        html += `<div class="node box" style="${style};visibility:hidden"></div>`;
-      } else if (isPrime(node.value)) {
+      if (isPrime(node.value)) {
         let color = getColorForPrime(node.value);
         html += `<div class="node circle" style="${style};background:${color};">${node.value}</div>`;
       } else {
@@ -209,21 +212,7 @@ function showFactors() {
   document.getElementById('example').innerHTML=
     `<div class="first-line">${num}=${product}</div>`+
     `<div class="second-line">${num}=${withExp}</div>`;
-
-  // 🌿 إضافة زر رسم آخر تحت الشجرة
-  const treeContainer = document.getElementById('treeContainer');
-  let existingBtn = document.getElementById('otherTreeBtn');
-  if (!existingBtn) {
-    const otherTreeBtn = document.createElement('button');
-    otherTreeBtn.id = 'otherTreeBtn';
-    otherTreeBtn.textContent = '🪄 رسم آخر';
-    otherTreeBtn.onclick = () => {
-      window.location.href = 'Tree.html';
-    };
-    treeContainer.appendChild(otherTreeBtn);
-  }
 }
-
 function drawLines(){
   const svg = document.querySelector('.svg-lines');
   svg.innerHTML='';
@@ -233,10 +222,6 @@ function drawLines(){
     const children=levels[i+1].querySelectorAll('.node');
     let c=0;
     parents.forEach(parent=>{
-      if (parent.dataset.hasFakeChildren === "true") {
-        c+=2;
-        return;
-      }
       const rectP=parent.getBoundingClientRect();
       for(let j=0;j<2;j++){
         if(c>=children.length) return;
@@ -247,8 +232,7 @@ function drawLines(){
         const y1=rectP.bottom - svgR.top;
         const x2=rectC.left+rectC.width/2 - svgR.left;
         const y2=rectC.top - svgR.top;
-        const color= child.style.visibility==='hidden' ? '#f0f4f8' : '#999';
-        svg.innerHTML+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="2"/>`;
+        svg.innerHTML+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#999" stroke-width="2"/>`;
       }
     });
   }
