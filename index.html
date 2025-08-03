@@ -69,11 +69,36 @@ footer{margin-top:20px; padding:10px; background:#333; color:white; font-size:16
   <button onclick="fZ()">حلل</button>
   <div id="factorsBox"></div>
 </div>
-<button 
-  style="background-color: #4CAF50; color: white; padding: 10px 20px; 
-         border: none; border-radius: 8px; cursor: pointer; font-size: 16px;">
+
+<!-- زر شجرة العوامل -->
+<button style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px;">
   <a href="tree_factors.html" style="color: white; text-decoration: none;">شجرة العوامل🌿</a>
 </button>
+
+<!-- زر تثبيت التطبيق -->
+<script>
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const installBtn = document.createElement('button');
+  installBtn.innerText = '📲 تثبيت التطبيق';
+  installBtn.style.cssText = 'margin-top:10px; padding:8px 16px; font-size:16px;';
+  document.body.appendChild(installBtn);
+  installBtn.addEventListener('click', () => {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('User accepted the install prompt');
+      } else {
+        console.log('User dismissed the install prompt');
+      }
+      deferredPrompt = null;
+    });
+  });
+});
+</script>
+
 <footer>
   <marquee direction="right" scrollamount="5">
     محمود عادل صالح – معلم رياضيات
@@ -82,6 +107,7 @@ footer{margin-top:20px; padding:10px; background:#333; color:white; font-size:16
     </a>
   </marquee>
 </footer>
+
 <script>
 function iP(n){if(n<=1)return!1;if(n===2)return!0;if(n%2===0)return!1;for(let i=3;i<=Math.sqrt(n);i+=2)if(n%i===0)return!1;return!0;}
 function cD(d){switch(d){case 2:return"purple";case 3:return"green";case 5:return"blue";case 7:return"orange";case 9:return"red";case 1:return"brown";default:return"#555";}}
