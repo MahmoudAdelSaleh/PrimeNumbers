@@ -4,7 +4,6 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🌿 شجرة العوامل</title>
-<link rel="manifest" href="manifest.json">
 <style>
   body {
     font-family: 'Tahoma', sans-serif;
@@ -52,15 +51,25 @@
     line-height: 1.8;
     direction: ltr;
   }
-  #example .first-line, #example .second-line {
-    font-size: 22px; font-weight: bold;
+  #example .first-line {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  #example .second-line {
+    font-size: 22px;
+    font-weight: bold;
   }
   #example .circle-inline {
     display: inline-block;
-    width: 26px; height: 26px;
+    width: 26px;
+    height: 26px;
     line-height: 26px;
     border-radius: 50%;
-    color: #fff; font-weight: bold; text-align: center; margin: 0 2px;
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+    margin: 0 2px;
   }
   marquee {
     margin-top: 30px; font-size: 16px; color: #2c3e50; direction: ltr;
@@ -77,7 +86,6 @@
   <br>
   <button onclick="saveAsImage()">📷 حفظ كصورة</button>
   <button onclick="showFactors()">عرض النتيجة</button>
-  <button onclick="window.location.href='index.html'">🏠 الصفحة الرئيسية</button>
 </div>
 
 <div class="tree" id="treeContainer">
@@ -85,7 +93,7 @@
   <div id="generatedTree"></div>
 </div>
 
-<div id="example"></div>
+<div id="example" class="example"></div>
 
 <marquee direction="right">
   محمود عادل صالح - معلم رياضيات 
@@ -95,17 +103,20 @@
 </marquee>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
+
 <script>
 function saveAsImage() {
   const tree = document.getElementById('treeContainer');
-  domtoimage.toPng(tree).then(dataUrl => {
-    let link = document.createElement('a');
-    link.download = 'factor-tree.png';
-    link.href = dataUrl;
-    link.click();
-  }).catch(error => {
-    console.error('خطأ في الحفظ كصورة!', error);
-  });
+  domtoimage.toPng(tree)
+    .then(function (dataUrl) {
+      let link = document.createElement('a');
+      link.download = 'factor-tree.png';
+      link.href = dataUrl;
+      link.click();
+    })
+    .catch(function (error) {
+      console.error('خطأ في الحفظ كصورة!', error);
+    });
 }
 
 function isPrime(n) {
@@ -131,7 +142,7 @@ function getColorForPrime(n) {
 
 function buildFactorTree(n) {
   let levels = [];
-  let currentLevel = [{ value: n }];
+  let currentLevel = [{ value: n, hasFakeChildren: false }];
   levels.push(currentLevel);
 
   while (true) {
@@ -139,11 +150,13 @@ function buildFactorTree(n) {
     let changed = false;
     for (let node of currentLevel) {
       if (isPrime(node.value)) {
+        node.hasFakeChildren = true;
         nextLevel.push({ value: '', isFake: true }, { value: '', isFake: true });
       } else {
         let factors = findBalancedFactors(node.value);
         if (factors) {
-          nextLevel.push({ value: factors[0] }, { value: factors[1] });
+          let sorted = factors[0] > factors[1] ? [factors[0], factors[1]] : [factors[1], factors[0]];
+          nextLevel.push({ value: sorted[0], hasFakeChildren: false }, { value: sorted[1], hasFakeChildren: false });
           changed = true;
         }
       }
@@ -160,6 +173,7 @@ function showFactors() {
   if (!num || num < 2) return;
 
   let levels = buildFactorTree(num);
+  const treeDiv = document.getElementById('generatedTree');
   let html = '';
   levels.forEach((level, idx) => {
     let size = 40 - idx * 4;
@@ -177,25 +191,36 @@ function showFactors() {
     });
     html += `</div>`;
   });
-  document.getElementById('generatedTree').innerHTML = html;
+  treeDiv.innerHTML = html;
   setTimeout(drawLines,50);
 
-  let flat=levels.flat().filter(n=>isPrime(n.value)).map(n=>n.value).sort((a,b)=>a-b);
-  let product=flat.map(v=>`<span class="circle-inline" style="background:${getColorForPrime(v)};">${v}</span>`).join('×');
-  let exp={}; flat.forEach(v=>exp[v]=(exp[v]||0)+1);
+  let flat=[];
+  levels.flat().forEach(n=>{if(n.value && isPrime(n.value)) flat.push(n.value);});
+  let sorted = [...flat].sort((a,b)=>a-b);
+
+  let product=sorted.map(v=>{
+    let color=getColorForPrime(v);
+    return `<span class="circle-inline" style="background:${color};">${v}</span>`;
+  }).join('×');
+
+  let exp={}; sorted.forEach(v=>exp[v]=(exp[v]||0)+1);
   let withExp=Object.entries(exp).map(([b,p])=>p>1?`${b}<sup>${p}</sup>`:b).join('×');
 
   document.getElementById('example').innerHTML=
     `<div class="first-line">${num}=${product}</div>`+
     `<div class="second-line">${num}=${withExp}</div>`;
 
-  // زر «🪄 رسم آخر»
-  if (!document.getElementById('otherTreeBtn')) {
-    const btn = document.createElement('button');
-    btn.id = 'otherTreeBtn';
-    btn.textContent = '🪄 رسم آخر';
-    btn.onclick = () => window.location.href='Tree.html';
-    document.getElementById('treeContainer').appendChild(btn);
+  // 🌿 إضافة زر رسم آخر تحت الشجرة
+  const treeContainer = document.getElementById('treeContainer');
+  let existingBtn = document.getElementById('otherTreeBtn');
+  if (!existingBtn) {
+    const otherTreeBtn = document.createElement('button');
+    otherTreeBtn.id = 'otherTreeBtn';
+    otherTreeBtn.textContent = '🪄 رسم آخر';
+    otherTreeBtn.onclick = () => {
+      window.location.href = 'Tree.html';
+    };
+    treeContainer.appendChild(otherTreeBtn);
   }
 }
 
@@ -208,13 +233,21 @@ function drawLines(){
     const children=levels[i+1].querySelectorAll('.node');
     let c=0;
     parents.forEach(parent=>{
+      if (parent.dataset.hasFakeChildren === "true") {
+        c+=2;
+        return;
+      }
+      const rectP=parent.getBoundingClientRect();
       for(let j=0;j<2;j++){
         if(c>=children.length) return;
         const child=children[c++];
-        const rectP=parent.getBoundingClientRect(), rectC=child.getBoundingClientRect(), svgR=svg.getBoundingClientRect();
-        const x1=rectP.left+rectP.width/2 - svgR.left, y1=rectP.bottom - svgR.top;
-        const x2=rectC.left+rectC.width/2 - svgR.left, y2=rectC.top - svgR.top;
-        const color=child.style.visibility==='hidden' ? '#f0f4f8' : '#999';
+        const rectC=child.getBoundingClientRect();
+        const svgR=svg.getBoundingClientRect();
+        const x1=rectP.left+rectP.width/2 - svgR.left;
+        const y1=rectP.bottom - svgR.top;
+        const x2=rectC.left+rectC.width/2 - svgR.left;
+        const y2=rectC.top - svgR.top;
+        const color= child.style.visibility==='hidden' ? '#f0f4f8' : '#999';
         svg.innerHTML+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="2"/>`;
       }
     });

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PrimeNumbers Icon Generator</title>
+    <style>
+        body { font-family: Arial; text-align: center; padding: 20px; }
+        canvas { border: 1px solid #ddd; margin: 10px; }
+        .output { display: flex; justify-content: center; flex-wrap: wrap; }
+    </style>
+</head>
+<body>
+    <h2>PrimeNumbers Icon Generator</h2>
+    
+    <input type="file" id="imageInput" accept=".png,.jpg,.jpeg,.ico">
+    <br><br>
+    
+    <div class="output">
+        <div>
+            <h3>192x192</h3>
+            <canvas id="icon192" width="192" height="192"></canvas>
+            <br>
+            <button onclick="downloadIcon(192)">Download 192x192</button>
+        </div>
+        
+        <div>
+            <h3>512x512</h3>
+            <canvas id="icon512" width="512" height="512"></canvas>
+            <br>
+            <button onclick="downloadIcon(512)">Download 512x512</button>
+        </div>
+    </div>
+
+    <script>
+        const sizes = [192, 512];
+        let originalImage = null;
+
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                originalImage = new Image();
+                originalImage.onload = function() {
+                    generateIcons();
+                };
+                originalImage.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function generateIcons() {
+            sizes.forEach(size => {
+                const canvas = document.getElementById(`icon${size}`);
+                const ctx = canvas.getContext('2d');
+                
+                // Fill with theme color (#4B0082)
+                ctx.fillStyle = '#4B0082';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Calculate aspect ratio
+                const ratio = Math.min(
+                    canvas.width / originalImage.width,
+                    canvas.height / originalImage.height
+                );
+                
+                const newWidth = originalImage.width * ratio * 0.8;
+                const newHeight = originalImage.height * ratio * 0.8;
+                
+                // Center the image
+                ctx.drawImage(
+                    originalImage,
+                    (canvas.width - newWidth) / 2,
+                    (canvas.height - newHeight) / 2,
+                    newWidth,
+                    newHeight
+                );
+            });
+        }
+
+        function downloadIcon(size) {
+            const canvas = document.getElementById(`icon${size}`);
+            const link = document.createElement('a');
+            link.download = `icon-${size}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+    </script>
+</body>
+</html>

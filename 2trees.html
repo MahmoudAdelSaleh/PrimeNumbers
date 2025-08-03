@@ -86,14 +86,12 @@
   <br>
   <button onclick="saveAsImage()">📷 حفظ كصورة</button>
   <button onclick="showFactors()">عرض النتيجة</button>
-  <button onclick="goBack()">🔙 رجوع لصفحة الأعداد الأولية</button>
+  <button onclick="toggleAlternativeTree()">🪄 إظهار/إخفاء الشجرة البديلة</button>
 </div>
 
 <div class="tree" id="treeContainer">
   <svg class="svg-lines"></svg>
   <div id="generatedTree"></div>
-  <br>
-  <button onclick="window.location.href='http://mahmoudadelsaleh.github.io/PrimeNumbers/tree_factors.html'">🪄 رجوع</button>
 </div>
 
 <div id="example" class="example"></div>
@@ -108,10 +106,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
 
 <script>
-// نفس الدوال كما هي ...
 function goBack() {
   window.location.href = 'index.html';
 }
+
 function saveAsImage() {
   const tree = document.getElementById('treeContainer');
   domtoimage.toPng(tree)
@@ -125,6 +123,7 @@ function saveAsImage() {
       console.error('خطأ في الحفظ كصورة!', error);
     });
 }
+
 function isPrime(n) {
   if (n <= 1) return false;
   if (n <= 3) return true;
@@ -133,6 +132,7 @@ function isPrime(n) {
     if (n % i === 0 || n % (i+2) === 0) return false;
   return true;
 }
+
 function getFactors(n) {
   let factors = [];
   for (let i = 2; i <= n/2; i++) {
@@ -140,10 +140,12 @@ function getFactors(n) {
   }
   return factors;
 }
+
 function getColorForPrime(n) {
   const colors = {2:'#3498db',3:'#e67e22',5:'#16a085',7:'#8e44ad',11:'#c0392b',13:'#d35400',17:'#27ae60'};
   return colors[n] || '#2c3e50';
 }
+
 function buildFactorTree(n) {
   let levels = [];
   let currentLevel = [{ value: n }];
@@ -154,16 +156,13 @@ function buildFactorTree(n) {
     let changed = false;
 
     for (let node of currentLevel) {
-      if (isPrime(node.value)) {
-        continue;
-      } else {
-        let factors = getFactors(node.value);
-        if (factors.length >= 1) {
-          let smallest = factors[0];
-          let largest = factors[factors.length - 1];
-          nextLevel.push({ value: largest }, { value: smallest });
-          changed = true;
-        }
+      if (isPrime(node.value)) continue;
+      let factors = getFactors(node.value);
+      if (factors.length >= 1) {
+        let smallest = factors[0];
+        let largest = factors[factors.length - 1];
+        nextLevel.push({ value: largest }, { value: smallest });
+        changed = true;
       }
     }
 
@@ -173,6 +172,7 @@ function buildFactorTree(n) {
   }
   return levels;
 }
+
 function showFactors() {
   const num = parseInt(document.getElementById('numberInput').value);
   if (!num || num < 2) return;
@@ -213,6 +213,7 @@ function showFactors() {
     `<div class="first-line">${num}=${product}</div>`+
     `<div class="second-line">${num}=${withExp}</div>`;
 }
+
 function drawLines(){
   const svg = document.querySelector('.svg-lines');
   svg.innerHTML='';
@@ -235,6 +236,45 @@ function drawLines(){
         svg.innerHTML+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#999" stroke-width="2"/>`;
       }
     });
+  }
+}
+
+// زر لإظهار/إخفاء الشجرة البديلة
+let altTreeVisible = false;
+function toggleAlternativeTree() {
+  const num = parseInt(document.getElementById('numberInput').value);
+  if (!num || num < 2) return;
+  const containerId = 'altTreeContainer';
+  let container = document.getElementById(containerId);
+
+  if (altTreeVisible) {
+    if (container) container.remove();
+    altTreeVisible = false;
+  } else {
+    let levels = buildFactorTree(num);
+    container = document.createElement('div');
+    container.id = containerId;
+    container.className = 'tree';
+    levels.forEach((level, idx) => {
+      let size = 40 - idx * 4;
+      const levelDiv = document.createElement('div');
+      levelDiv.className = 'level';
+      level.forEach(node => {
+        const nodeDiv = document.createElement('div');
+        nodeDiv.className = isPrime(node.value) ? 'node circle' : 'node box';
+        nodeDiv.style.width = size+'px';
+        nodeDiv.style.height = size+'px';
+        nodeDiv.style.fontSize = (size/2)+'px';
+        if (isPrime(node.value)) {
+          nodeDiv.style.background = getColorForPrime(node.value);
+        }
+        nodeDiv.textContent = node.value;
+        levelDiv.appendChild(nodeDiv);
+      });
+      container.appendChild(levelDiv);
+    });
+    document.getElementById('treeContainer').appendChild(container);
+    altTreeVisible = true;
   }
 }
 </script>

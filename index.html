@@ -1,73 +1,82 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-KMJD4H272E"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PrimeNumbers</title>
+<link rel="manifest" href="manifest.json">
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-KMJD4H272E');
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js').then(() => {
+    console.log("Service Worker Registered");
+  });
+}
 </script>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>🧮 الأعداد الأولية</title>
-<link rel="manifest" href="manifest.json">
 <style>
-body{font-family:'Calibri',Tahoma,sans-serif;direction:rtl;text-align:center;margin:0;padding:10px;color:#4B0082;transition:background 1s;}
-h2{font-weight:bold;font-size:22px;margin-bottom:10px;background:#000;color:#fff;padding:10px;border-radius:8px;display:inline-block;}
-label{font-weight:bold;font-size:18px;display:block;margin:10px 0 5px;background:#ccc;color:#9370DB;border-radius:6px;padding:6px;}
-input[type=number]{width:80px;padding:5px;margin:5px;font-size:16px;font-weight:bold;}
-button{padding:8px 16px;margin:5px;font-size:16px;font-weight:bold;cursor:pointer;}
-.primes-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;justify-items:center;margin-top:10px;direction:ltr;}
-.prime{padding:6px 10px;border-radius:4px;display:inline-block;color:white;font-size:16px;min-width:40px;font-weight:bold;}
-#primesBox,#primeAtBox,#checkBox,#surroundingBox,#rankBox{margin-top:10px;word-wrap:break-word;font-size:18px;font-weight:bold;}
-#factorsBox{direction:ltr;display:inline-block;background:#ccc;color:#9370DB;border-radius:6px;font-weight:bold;margin-top:10px;font-size:18px;padding:4px 8px;white-space:nowrap;}
-#factorsBox .prime{padding:2px 4px;border-radius:4px;display:inline-flex;color:white;font-size:16px;font-weight:bold;min-width:unset;}
-footer{margin-top:20px;padding:10px;background:#333;color:white;font-size:16px;border-radius:8px;font-weight:bold;}
-.link-button{display:inline-block;padding:8px 16px;background:#4CAF50;color:white;text-decoration:none;border-radius:6px;font-weight:bold;margin-top:10px;}
-.link-button:hover{background:#45a049;}
+body {font-family:'Calibri',Tahoma,sans-serif; direction:rtl; text-align:center; margin:0; padding:10px; color:#4B0082; transition:background 1s;}
+h2 {font-weight:bold; font-size:22px; margin-bottom:10px; background:#000; color:#fff; padding:10px; border-radius:8px; display:inline-block;}
+label {font-weight:bold; font-size:18px; display:block; margin:10px 0 5px; background:#ccc; color:#9370DB; border-radius:6px; padding:6px;}
+input[type=number]{width:80px; padding:5px; margin:5px; font-size:16px; font-weight:bold;}
+button{padding:8px 16px; margin:5px; font-size:16px; font-weight:bold; cursor:pointer;}
+.primes-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:4px; justify-items:center; margin-top:10px; direction:ltr;}
+.prime{padding:6px 10px; border-radius:4px; display:inline-block; color:white; font-size:16px; min-width:40px; font-weight:bold;}
+#primesBox, #primeAtBox, #checkBox, #surroundingBox, #rankBox{margin-top:10px; word-wrap:break-word; font-size:18px; font-weight:bold;}
+#factorsBox{direction:ltr; display:inline-block; background:#ccc; color:#9370DB; border-radius:6px; font-weight:bold; margin-top:10px; font-size:18px; padding:4px 8px; white-space:nowrap;}
+#factorsBox .prime{padding:2px 4px; border-radius:4px; display:inline-flex; color:white; font-size:16px; font-weight:bold; min-width:unset;}
+footer{margin-top:20px; padding:10px; background:#333; color:white; font-size:16px; border-radius:8px; font-weight:bold;}
 </style>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#317EFB">
 </head>
 <body>
 <h2>🧮 توليد وتحليل الأعداد الأولية</h2>
-<div><label>أدخل عدد n لإيجاد كل الأعداد الأولية الأصغر منه:</label>
-<input type="number" id="n" value="100">
-<button onclick="gP()">اعرض الأعداد الأولية</button>
-<div id="primesBox" class="primes-grid"></div></div><hr>
-<div><label>أدخل ترتيب k لإيجاد العدد الأولي في هذا الترتيب:</label>
-<input type="number" id="k" value="10">
-<button onclick="gPA()">اعرض العدد الأولي</button>
-<div id="primeAtBox"></div></div><hr>
-<div><label>اختبر إذا كان العدد m أوليًا:</label>
-<input type="number" id="m" value="37">
-<button onclick="cP()">اختبر</button>
-<div id="checkBox"></div></div><hr>
-<div><label>أدخل عدد x لإيجاد العددين الأوليين الأقرب المحصور بينهما :</label>
-<input type="number" id="x" value="50">
-<button onclick="fSP()">اعرض العددين</button>
-<div id="surroundingBox"></div></div><hr>
-<div><label>أدخل عدد y لإيجاد رتبته إذا كان أوليًا، أو العددين الأوليين الأقرب ورتبتهما:</label>
-<input type="number" id="y" value="20">
-<button onclick="fR()">اعرض الرتبة</button>
-<div id="rankBox"></div></div><hr>
-<div><label> أدخل عددا لتحليله إلى عوامله الأولية:</label>
-<input type="number" id="z" value="120">
-<button onclick="fZ()">حلل</button>
-<div id="factorsBox"></div></div>
-
-<!-- ✅ رابط شجرة العوامل -->
 <div>
-  <a href="tree_factors.html" class="link-button">🌿 عرض شجرة العوامل</a>
+  <label>أدخل رقم n لإيجاد كل الأعداد الأولية الأصغر منه:</label>
+  <input type="number" id="n" value="100">
+  <button onclick="gP()">اعرض الأعداد الأولية</button>
+  <div id="primesBox" class="primes-grid"></div>
 </div>
-
-<footer><marquee direction="right" scrollamount="5">محمود عادل صالح – معلم رياضيات 
-<a href="https://www.facebook.com/barghouthean?mibextid=ZbWKwL" target="_blank" style="margin-right:10px;">
-<img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" width="20" style="vertical-align:middle;">
-</a></marquee></footer>
-
+<hr>
+<div>
+  <label>أدخل ترتيب k لإيجاد العدد الأولي في هذا الترتيب:</label>
+  <input type="number" id="k" value="10">
+  <button onclick="gPA()">اعرض العدد الأولي</button>
+  <div id="primeAtBox"></div>
+</div>
+<hr>
+<div>
+  <label>اختبر إذا كان رقم m أوليًا:</label>
+  <input type="number" id="m" value="37">
+  <button onclick="cP()">اختبر</button>
+  <div id="checkBox"></div>
+</div>
+<hr>
+<div>
+  <label>أدخل رقم x لإيجاد العددين الأوليين الأقرب المحصورين حوله:</label>
+  <input type="number" id="x" value="50">
+  <button onclick="fSP()">اعرض العددين</button>
+  <div id="surroundingBox"></div>
+</div>
+<hr>
+<div>
+  <label>أدخل رقم y لإيجاد رتبته إذا كان أوليًا، أو العددين الأوليين الأقرب ورتبتهما:</label>
+  <input type="number" id="y" value="20">
+  <button onclick="fR()">اعرض الرتبة</button>
+  <div id="rankBox"></div>
+</div>
+<hr>
+<div>
+  <label>أدخل رقم z لتحليله إلى عوامله الأولية:</label>
+  <input type="number" id="z" value="120">
+  <button onclick="fZ()">حلل</button>
+  <div id="factorsBox"></div>
+</div>
+<footer>
+  <marquee direction="right" scrollamount="5">
+    محمود عادل صالح – معلم رياضيات
+    <a href="https://www.facebook.com/barghouthean?mibextid=ZbWKwL" target="_blank" style="margin-right:10px;">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" width="20" style="vertical-align:middle;">
+    </a>
+  </marquee>
+</footer>
 <script>
 function iP(n){if(n<=1)return!1;if(n===2)return!0;if(n%2===0)return!1;for(let i=3;i<=Math.sqrt(n);i+=2)if(n%i===0)return!1;return!0;}
 function cD(d){switch(d){case 2:return"purple";case 3:return"green";case 5:return"blue";case 7:return"orange";case 9:return"red";case 1:return"brown";default:return"#555";}}
@@ -77,37 +86,8 @@ function gPA(){let k=+document.getElementById('k').value,c=0,n=1;while(c<k){n++;
 function cP(){let m=+document.getElementById('m').value,r=iP(m)?"عدد أولي":"ليس عددًا أوليًا";document.getElementById('checkBox').innerHTML=`${pS(m)} : ${r}`;}
 function fSP(){let x=+document.getElementById('x').value,l=x-1,u=x+1;while(l>1&&!iP(l))l--;while(!iP(u))u++;document.getElementById('surroundingBox').innerHTML=`الأقرب: ${pS(l)} و ${pS(u)}`;}
 function fR(){let y=+document.getElementById('y').value;if(iP(y)){let c=0;for(let i=2;i<=y;i++)if(iP(i))c++;document.getElementById('rankBox').innerHTML=`${pS(y)} هو العدد الأولي رقم ${c}`;}else{let l=y-1,u=y+1;while(l>1&&!iP(l))l--;while(!iP(u))u++;let lr=0,ur=0,c=0,i=2;while(i<=u){if(iP(i)){c++;if(i==l)lr=c;if(i==u)ur=c;}i++;}document.getElementById('rankBox').innerHTML=`${y} ليس أوليًا.<br>الأقرب: ${pS(l)} رتبته ${lr} ، و ${pS(u)} رتبته ${ur}`;}}
-function fZ(){let z=+document.getElementById('z').value, n=z, f=[];for(let i=2;i<=n;i++){while(n%i === 0){f.push(i);n /= i;}}let result = [];let current = f[0], count = 1;for(let i=1; i<=f.length; i++){if(f[i] === current){count++;} else {result.push(count > 1 ? `${pS(current)}<sup>${count}</sup>` : pS(current));current = f[i];count = 1;}}document.getElementById('factorsBox').innerHTML = `${z} = ${result.join(' × ')}`;}
+function fZ(){let z=+document.getElementById('z').value,n=z,f=[];for(let i=2;i<=n;i++){while(n%i===0){f.push(i);n/=i;}}document.getElementById('factorsBox').innerHTML=`${z} = `+f.map(pS).join(' × ');}
 let cs=["#000000","#B9F2FF"],ix=0;setInterval(()=>{document.body.style.background=cs[ix];ix=(ix+1)%cs.length;},6000);
-
-// ✅ تسجيل Service Worker + إحصائية عند التثبيت
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js')
-    .then(function(reg) {
-      console.log('✅ Service Worker مسجل:', reg);
-    })
-    .catch(function(err) {
-      console.log('❌ فشل تسجيل Service Worker:', err);
-    });
-}
-window.addEventListener('appinstalled', () => { gtag('event', 'pwa_installed'); });
-
-// ✅ منع الرجوع بزر العودة
-history.pushState(null, document.title, location.href);
-window.addEventListener('popstate', function () {
-  history.pushState(null, document.title, location.href);
-});
-</script>
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js')
-    .then(function(registration) {
-      console.log('Service Worker registered');
-    })
-    .catch(function(error) {
-      console.log('Service Worker registration failed:', error);
-    });
-  }
 </script>
 </body>
 </html>
