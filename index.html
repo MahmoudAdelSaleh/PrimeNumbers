@@ -43,7 +43,7 @@ footer{margin-top:20px; padding:10px; background:#333; color:white; font-size:16
 </div>
 <hr>
 <div>
-  <label>اختبر إذا كان  عدد m أوليًا:</label>
+  <label>اختبر إذا كان عدد m أوليًا:</label>
   <input type="number" id="m" value="37">
   <button onclick="cP()">اختبر</button>
   <div id="checkBox"></div>
@@ -70,12 +70,10 @@ footer{margin-top:20px; padding:10px; background:#333; color:white; font-size:16
   <div id="factorsBox"></div>
 </div>
 
-<!-- زر شجرة العوامل -->
 <button style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px;">
   <a href="tree_factors.html" style="color: white; text-decoration: none;">شجرة العوامل🌿</a>
 </button>
 
-<!-- زر تثبيت التطبيق -->
 <script>
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e) => {
@@ -109,16 +107,157 @@ window.addEventListener('beforeinstallprompt', (e) => {
 </footer>
 
 <script>
-function iP(n){if(n<=1)return!1;if(n===2)return!0;if(n%2===0)return!1;for(let i=3;i<=Math.sqrt(n);i+=2)if(n%i===0)return!1;return!0;}
-function cD(d){switch(d){case 2:return"purple";case 3:return"green";case 5:return"blue";case 7:return"orange";case 9:return"red";case 1:return"brown";default:return"#555";}}
-function pS(p){let c=cD(p%10);return`<span class="prime" style="background:${c}">${p}</span>`;}
-function gP(){let n=+document.getElementById('n').value,a=[];for(let i=2;i<n;i++)if(iP(i))a.push(i);let s=[2,3,5,7].filter(p=>p<n),o=a.filter(p=>!s.includes(p));document.getElementById('primesBox').innerHTML=s.map(pS).join('')+o.map(pS).join('');}
-function gPA(){let k=+document.getElementById('k').value,c=0,n=1;while(c<k){n++;if(iP(n))c++;}document.getElementById('primeAtBox').innerHTML=`العدد الأولي رقم ${k} هو: ${pS(n)}`;}
-function cP(){let m=+document.getElementById('m').value,r=iP(m)?"عدد أولي":"ليس عددًا أوليًا";document.getElementById('checkBox').innerHTML=`${pS(m)} : ${r}`;}
-function fSP(){let x=+document.getElementById('x').value,l=x-1,u=x+1;while(l>1&&!iP(l))l--;while(!iP(u))u++;document.getElementById('surroundingBox').innerHTML=`الأقرب: ${pS(l)} و ${pS(u)}`;}
-function fR(){let y=+document.getElementById('y').value;if(iP(y)){let c=0;for(let i=2;i<=y;i++)if(iP(i))c++;document.getElementById('rankBox').innerHTML=`${pS(y)} هو العدد الأولي رقم ${c}`;}else{let l=y-1,u=y+1;while(l>1&&!iP(l))l--;while(!iP(u))u++;let lr=0,ur=0,c=0,i=2;while(i<=u){if(iP(i)){c++;if(i==l)lr=c;if(i==u)ur=c;}i++;}document.getElementById('rankBox').innerHTML=`${y} ليس أوليًا.<br>الأقرب: ${pS(l)} رتبته ${lr} ، و ${pS(u)} رتبته ${ur}`;}}
-function fZ(){let z=+document.getElementById('z').value,n=z,f=[];for(let i=2;i<=n;i++){while(n%i===0){f.push(i);n/=i;}}document.getElementById('factorsBox').innerHTML=`${z} = `+f.map(pS).join(' × ');}
-let cs=["#000000","#B9F2FF"],ix=0;setInterval(()=>{document.body.style.background=cs[ix];ix=(ix+1)%cs.length;},6000);
+// Improved function to check if a number is prime
+function iP(n) {
+  if (n <= 1) return false;
+  if (n <= 3) return true;
+  if (n % 2 === 0 || n % 3 === 0) return false;
+  let s = Math.sqrt(n);
+  for (let i = 5; i <= s; i += 6) {
+    if (n % i === 0 || n % (i + 2) === 0) return false;
+  }
+  return true;
+}
+
+// Function to get a color based on the last digit of the prime number
+function cD(d) {
+  switch (d) {
+    case 1: return "#8B4513"; // Brown
+    case 3: return "green";
+    case 7: return "orange";
+    case 9: return "red";
+    case 2: return "purple";
+    case 5: return "blue";
+    default: return "#555";
+  }
+}
+
+// Function to format a prime number for display
+function pS(p) {
+  let c = cD(p % 10);
+  return `<span class="prime" style="background:${c}">${p}</span>`;
+}
+
+// Function to display all primes less than n
+function gP() {
+  const n = +document.getElementById('n').value;
+  if (n <= 2) {
+    document.getElementById('primesBox').innerHTML = 'أدخل رقمًا أكبر من 2.';
+    return;
+  }
+  const primes = [];
+  for (let i = 2; i < n; i++) {
+    if (iP(i)) {
+      primes.push(i);
+    }
+  }
+  document.getElementById('primesBox').innerHTML = primes.map(pS).join('');
+}
+
+// Function to find the k-th prime number
+function gPA() {
+  const k = +document.getElementById('k').value;
+  if (k < 1) {
+    document.getElementById('primeAtBox').innerHTML = 'أدخل رقمًا موجبًا.';
+    return;
+  }
+  let count = 0;
+  let num = 1;
+  while (count < k) {
+    num++;
+    if (iP(num)) {
+      count++;
+    }
+  }
+  document.getElementById('primeAtBox').innerHTML = `العدد الأولي رقم ${k} هو: ${pS(num)}`;
+}
+
+// Function to check if a number is prime
+function cP() {
+  const m = +document.getElementById('m').value;
+  const result = iP(m) ? 'عدد أولي' : 'ليس عددًا أوليًا';
+  document.getElementById('checkBox').innerHTML = `${pS(m)} : ${result}`;
+}
+
+// Function to find the primes surrounding a number
+function fSP() {
+  const x = +document.getElementById('x').value;
+  if (x <= 2) {
+    document.getElementById('surroundingBox').innerHTML = 'أدخل رقمًا أكبر من 2.';
+    return;
+  }
+  let lowerPrime = x - 1;
+  let upperPrime = x + 1;
+  while (lowerPrime > 1 && !iP(lowerPrime)) {
+    lowerPrime--;
+  }
+  while (!iP(upperPrime)) {
+    upperPrime++;
+  }
+  document.getElementById('surroundingBox').innerHTML = `الأقرب: ${pS(lowerPrime)} ${pS(upperPrime)}`;
+}
+
+// Function to find the rank of a prime or the surrounding primes' ranks
+function fR() {
+  const y = +document.getElementById('y').value;
+  if (y <= 1) {
+    document.getElementById('rankBox').innerHTML = 'أدخل رقمًا أكبر من 1.';
+    return;
+  }
+  if (iP(y)) {
+    let count = 0;
+    for (let i = 2; i <= y; i++) {
+      if (iP(i)) count++;
+    }
+    document.getElementById('rankBox').innerHTML = `${pS(y)} هو العدد الأولي رقم ${count}`;
+  } else {
+    let lowerPrime = y - 1;
+    let upperPrime = y + 1;
+    while (lowerPrime > 1 && !iP(lowerPrime)) {
+      lowerPrime--;
+    }
+    while (!iP(upperPrime)) {
+      upperPrime++;
+    }
+    let lowerRank = 0;
+    let upperRank = 0;
+    let count = 0;
+    for (let i = 2; i <= upperPrime; i++) {
+      if (iP(i)) {
+        count++;
+        if (i === lowerPrime) lowerRank = count;
+        if (i === upperPrime) upperRank = count;
+      }
+    }
+    document.getElementById('rankBox').innerHTML = `${y} ليس أوليًا.<br>الأقرب: ${pS(lowerPrime)} رتبته ${lowerRank} ، و ${pS(upperPrime)} رتبته ${upperRank}`;
+  }
+}
+
+// Function to find prime factors
+function fZ() {
+  const z = +document.getElementById('z').value;
+  if (z <= 1) {
+    document.getElementById('factorsBox').innerHTML = 'أدخل رقمًا أكبر من 1.';
+    return;
+  }
+  let n = z;
+  const factors = [];
+  for (let i = 2; i <= n; i++) {
+    while (n % i === 0) {
+      factors.push(i);
+      n /= i;
+    }
+  }
+  document.getElementById('factorsBox').innerHTML = `${z} = ` + factors.map(pS).join(' × ');
+}
+
+// Background color animation
+const colors = ["#000000", "#B9F2FF"];
+let colorIndex = 0;
+setInterval(() => {
+  document.body.style.background = colors[colorIndex];
+  colorIndex = (colorIndex + 1) % colors.length;
+}, 6000);
 </script>
 </body>
 </html>
