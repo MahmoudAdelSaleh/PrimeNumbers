@@ -1,31 +1,14 @@
-const CACHE_NAME = 'factors-multiples-app-cache-v2';
-const urlsToCache = [
-  './',
-  'index.html',
-  'manifest.json',
-  'icon-192x192.png',
-  'icon-512x512.png',
-  // أضف أي ملفات أخرى تود تخزينها مؤقتًا
-];
-
+// تثبيت السيرفس وركر وتخطي الانتظار
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('Opened new cache');
-        return cache.addAll(urlsToCache);
-      })
-  );
+  self.skipWaiting();
 });
 
+// تفعيل السيرفس وركر والسيطرة على الصفحات فورًا
+self.addEventListener('activate', event => {
+  clients.claim();
+});
+
+// التعامل مع أي طلب (بدون كاش)، فقط تمريره مباشرة
 self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        if (response) {
-          return response;
-        }
-        return fetch(event.request);
-      })
-  );
+  event.respondWith(fetch(event.request));
 });
