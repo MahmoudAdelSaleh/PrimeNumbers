@@ -13,14 +13,22 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 <style>
-body {font-family:'Calibri',Tahoma,sans-serif; direction:rtl; text-align:center; margin:0; padding:10px; color:#4B0082; transition:background 1s;}
+body {
+    font-family:'Calibri',Tahoma,sans-serif;
+    direction:rtl;
+    text-align:center;
+    margin:0;
+    padding:10px;
+    color:#4B0082;
+    background-color: #F0F8FF; /* لون الماسي الفضي الذهبي */
+}
 h2 {font-weight:bold; font-size:22px; margin-bottom:10px; background:#000; color:#fff; padding:10px; border-radius:8px; display:inline-block;}
 label {font-weight:bold; font-size:18px; display:block; margin:10px 0 5px; background:#ccc; color:#9370DB; border-radius:6px; padding:6px;}
 input[type=number]{width:80px; padding:5px; margin:5px; font-size:16px; font-weight:bold;}
-button{padding:8px 16px; margin:5px; font-size:16px; font-weight:bold; cursor:pointer;}
-.primes-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:4px; justify-items:center; margin-top:10px; direction:ltr;}
+button{padding:8px 16px; margin:5px; font-size:16px; font-weight:bold; cursor:pointer; background-color: #4B0082; color: white; border: none; border-radius: 6px;}
+.primes-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:10px; justify-items:center; margin-top:10px; direction:ltr;}
 .prime{padding:6px 10px; border-radius:4px; display:inline-block; color:white; font-size:16px; min-width:40px; font-weight:bold;}
-#primesBox, #primeAtBox, #checkBox, #surroundingBox, #rankBox{margin-top:10px; word-wrap:break-word; font-size:18px; font-weight:bold;}
+#primesBox, #primeAtBox, #checkBox, #surroundingBox, #rankBox{margin-top:10px; padding:10px; background-color:#e6e6fa; border: 2px solid #9370DB; border-radius:8px; word-wrap:break-word; font-size:18px; font-weight:bold; min-height:50px; direction:rtl; display:block;}
 #factorsBox{direction:ltr; display:inline-block; background:#ccc; color:#9370DB; border-radius:6px; font-weight:bold; margin-top:10px; font-size:18px; padding:4px 8px; white-space:nowrap;}
 #factorsBox .prime{padding:2px 4px; border-radius:4px; display:inline-flex; color:white; font-size:16px; font-weight:bold; min-width:unset;}
 footer{margin-top:20px; padding:10px; background:#333; color:white; font-size:16px; border-radius:8px; font-weight:bold;}
@@ -67,7 +75,7 @@ footer{margin-top:20px; padding:10px; background:#333; color:white; font-size:16
   <label>أدخل عددا لتحليله إلى عوامله الأولية:</label>
   <input type="number" id="z" value="120">
   <button onclick="fZ()">حلل</button>
-  <div id="factorsBox"></div>
+  <div id="factorsBox" class="result-box"></div>
 </div>
 
 <button style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px;">
@@ -107,7 +115,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 </footer>
 
 <script>
-// Improved function to check if a number is prime
+// دالة محسّنة للتحقق مما إذا كان العدد أوليًا
 function iP(n) {
   if (n <= 1) return false;
   if (n <= 3) return true;
@@ -119,10 +127,10 @@ function iP(n) {
   return true;
 }
 
-// Function to get a color based on the last digit of the prime number
+// دالة لتحديد لون العدد الأولي بناءً على آخر رقم فيه
 function cD(d) {
   switch (d) {
-    case 1: return "#8B4513"; // Brown
+    case 1: return "#8B4513"; // بني
     case 3: return "green";
     case 7: return "orange";
     case 9: return "red";
@@ -132,13 +140,13 @@ function cD(d) {
   }
 }
 
-// Function to format a prime number for display
+// دالة لتنسيق العدد الأولي للعرض
 function pS(p) {
   let c = cD(p % 10);
   return `<span class="prime" style="background:${c}">${p}</span>`;
 }
 
-// Function to display all primes less than n
+// دالة لعرض جميع الأعداد الأولية الأصغر من n
 function gP() {
   const n = +document.getElementById('n').value;
   if (n <= 2) {
@@ -154,7 +162,7 @@ function gP() {
   document.getElementById('primesBox').innerHTML = primes.map(pS).join('');
 }
 
-// Function to find the k-th prime number
+// دالة لإيجاد العدد الأولي في الترتيب k
 function gPA() {
   const k = +document.getElementById('k').value;
   if (k < 1) {
@@ -172,14 +180,14 @@ function gPA() {
   document.getElementById('primeAtBox').innerHTML = `العدد الأولي رقم ${k} هو: ${pS(num)}`;
 }
 
-// Function to check if a number is prime
+// دالة لاختبار إذا كان العدد m أوليًا
 function cP() {
   const m = +document.getElementById('m').value;
   const result = iP(m) ? 'عدد أولي' : 'ليس عددًا أوليًا';
   document.getElementById('checkBox').innerHTML = `${pS(m)} : ${result}`;
 }
 
-// Function to find the primes surrounding a number
+// دالة لإيجاد العددين الأوليين الأقرب لعدد معين
 function fSP() {
   const x = +document.getElementById('x').value;
   if (x <= 2) {
@@ -197,7 +205,7 @@ function fSP() {
   document.getElementById('surroundingBox').innerHTML = `الأقرب: ${pS(lowerPrime)} ${pS(upperPrime)}`;
 }
 
-// Function to find the rank of a prime or the surrounding primes' ranks
+// دالة لإيجاد رتبة العدد الأولي أو رتبة الأعداد الأقرب له
 function fR() {
   const y = +document.getElementById('y').value;
   if (y <= 1) {
@@ -209,7 +217,7 @@ function fR() {
     for (let i = 2; i <= y; i++) {
       if (iP(i)) count++;
     }
-    document.getElementById('rankBox').innerHTML = `${pS(y)} هو العدد الأولي رقم ${count}`;
+    document.getElementById('rankBox').innerHTML = `${pS(y)}<br> هو العدد الأولي رقم ${count}`;
   } else {
     let lowerPrime = y - 1;
     let upperPrime = y + 1;
@@ -229,15 +237,16 @@ function fR() {
         if (i === upperPrime) upperRank = count;
       }
     }
-    document.getElementById('rankBox').innerHTML = `${y} ليس أوليًا.<br>الأقرب: ${pS(lowerPrime)} رتبته ${lowerRank} ، و ${pS(upperPrime)} رتبته ${upperRank}`;
+    document.getElementById('rankBox').innerHTML = `${y} ليس أوليًا.<br><br>الأقرب:<br>${pS(lowerPrime)} رتبته ${lowerRank}<br>${pS(upperPrime)} رتبته ${upperRank}`;
   }
 }
 
-// Function to find prime factors
+// دالة لتحليل العدد إلى عوامله الأولية
 function fZ() {
   const z = +document.getElementById('z').value;
+  const factorsBox = document.getElementById('factorsBox');
   if (z <= 1) {
-    document.getElementById('factorsBox').innerHTML = 'أدخل رقمًا أكبر من 1.';
+    factorsBox.innerHTML = 'أدخل رقمًا أكبر من 1.';
     return;
   }
   let n = z;
@@ -248,16 +257,9 @@ function fZ() {
       n /= i;
     }
   }
-  document.getElementById('factorsBox').innerHTML = `${z} = ` + factors.map(pS).join(' × ');
+  factorsBox.innerHTML = `${z} = ` + factors.map(pS).join(' × ');
 }
 
-// Background color animation
-const colors = ["#000000", "#B9F2FF"];
-let colorIndex = 0;
-setInterval(() => {
-  document.body.style.background = colors[colorIndex];
-  colorIndex = (colorIndex + 1) % colors.length;
-}, 6000);
 </script>
 </body>
 </html>
