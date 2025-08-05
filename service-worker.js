@@ -3,8 +3,8 @@ const urlsToCache = [
   './',
   'index.html',
   'manifest.json',
-  'images/icon-192x192.png',
-  'images/icon-512x512.png',
+  'icon-192x192.png',
+  'icon-512x512.png',
   // أضف أي ملفات أخرى تود تخزينها مؤقتًا
 ];
 
