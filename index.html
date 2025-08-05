@@ -1,6 +1,24 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/images/icon-192x192.png">
+<meta name="theme-color" content="#007bff">
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(registration => {
+          console.log('Service Worker registered successfully: ', registration);
+        })
+        .catch(error => {
+          console.log('Service Worker registration failed: ', error);
+        });
+    });
+  }
+</script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>العوامل والمضاعفات</title>
