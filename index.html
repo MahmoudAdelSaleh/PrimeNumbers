@@ -1,28 +1,14 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-<link rel="manifest" href="/manifest.json">
-<link rel="apple-touch-icon" href="/images/icon-192x192.png">
-<meta name="theme-color" content="#007bff">
-
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then(registration => {
-          console.log('Service Worker registered successfully: ', registration);
-        })
-        .catch(error => {
-          console.log('Service Worker registration failed: ', error);
-        });
-    });
-  }
-</script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>العوامل والمضاعفات</title>
-    <link rel="manifest" href="manifest.json">
+
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/images/icon-192x192.png">
+    <meta name="theme-color" content="#007bff">
+
     <style>
         /* General Styles & Root Variables */
         :root {
@@ -47,7 +33,7 @@
 
         body {
             direction: rtl;
-            background-color: #F0F8FF; /* لون الماسي الفضي الذهبي */
+            background-color: #F0F8FF;
             color: var(--text-color);
             display: flex;
             flex-direction: column;
@@ -118,7 +104,7 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
+
         .input-group, .controls {
             display: flex;
             flex-direction: column;
@@ -135,7 +121,7 @@
             border-radius: 8px;
             text-align: center;
         }
-        
+
         .input-group button, .controls button {
             width: 100%;
             max-width: 250px;
@@ -148,11 +134,11 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        
+
         .input-group button:hover, .controls button:hover {
             background-color: #2980b9;
         }
-        
+
         .result-box, .solution-box {
             background-color: var(--bg-color);
             padding: 15px;
@@ -164,18 +150,18 @@
             border-color: var(--accent-color);
             margin-top: 10px;
         }
-        
+
         .solution-box h3 {
             font-size: 18px;
             margin-bottom: 10px;
             color: var(--accent-color);
         }
-        
+
         .solution-box ol, .solution-box ul {
             list-style-position: inside;
             padding-right: 20px;
         }
-        
+
         .solution-box li {
             margin-bottom: 5px;
             line-height: 1.5;
@@ -186,7 +172,7 @@
             margin-bottom: 10px;
             font-size: 18px;
         }
-        
+
         .result-list {
             list-style: none;
             display: flex;
@@ -194,7 +180,7 @@
             gap: 8px;
             direction: ltr;
         }
-        
+
         .result-list.rtl {
             direction: rtl;
         }
@@ -207,7 +193,7 @@
             font-size: 16px;
             font-weight: normal;
         }
-        
+
         /* New CSS for factors highlighting */
         .factor-item {
             display: inline-block;
@@ -265,7 +251,7 @@
             position: relative;
             display: inline-block;
             margin-top: 10px;
-            min-height: 200px; /* Prevents layout shift */
+            min-height: 200px;
             width: 100%;
         }
 
@@ -292,7 +278,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--control-bg);
+            background: var(--bg-color);
             border: 2px solid var(--text-color);
             font-weight: bold;
             position: relative;
@@ -342,7 +328,7 @@
             text-align: center;
             margin: 0 4px;
         }
-        
+
         /* Styles for Page 3: Prime Numbers */
         #prime-numbers-tab h2 {font-weight:bold; font-size:22px; margin-bottom:10px; background:#000; color:#fff; padding:10px; border-radius:8px; display:inline-block;}
         #prime-numbers-tab label {font-weight:bold; font-size:18px; display:block; margin:10px 0 5px; background:#ccc; color:#9370DB; border-radius:6px; padding:6px;}
@@ -350,7 +336,7 @@
         #prime-numbers-tab button {padding:8px 16px; margin:5px; font-size:16px; font-weight:bold; cursor:pointer; background-color: #4B0082; color: white; border: none; border-radius: 6px;}
         #prime-numbers-tab .primes-grid {display:grid; grid-template-columns:repeat(5,1fr); gap:10px; justify-items:center; margin-top:10px; direction:ltr;}
         #prime-numbers-tab .prime {padding:6px 10px; border-radius:4px; display:inline-block; color:white; font-size:16px; min-width:40px; font-weight:bold;}
-        #prime-numbers-tab #primesBox, #prime-numbers-tab #primeAtBox, #prime-numbers-tab #checkBox, #prime-numbers-tab #surroundingBox, #prime-numbers-tab #rankBox {margin-top:10px; padding:10px; background-color:#e6e6fa; border: 2px solid #9370DB; border-radius:8px; word-wrap:break-word; font-size:18px; font-weight:bold; min-height:50px; direction:rtl; display:block;}
+        #prime-numbers-tab #primesBox-prime, #prime-numbers-tab #primeAtBox, #prime-numbers-tab #checkBox, #prime-numbers-tab #surroundingBox, #prime-numbers-tab #rankBox {margin-top:10px; padding:10px; background-color:#e6e6fa; border: 2px solid #9370DB; border-radius:8px; word-wrap:break-word; font-size:18px; font-weight:bold; min-height:50px; direction:rtl; display:block;}
         #prime-numbers-tab #factorsBox-prime {direction:ltr; display:inline-block; background:#ccc; color:#9370DB; border-radius:6px; font-weight:bold; margin-top:10px; font-size:18px; padding:4px 8px; white-space:nowrap;}
         #prime-numbers-tab #factorsBox-prime .prime {padding:2px 4px; border-radius:4px; display:inline-flex; color:white; font-size:16px; font-weight:bold; min-width:unset;}
 
@@ -361,7 +347,7 @@
             color: #fff;
             margin-top: 20px;
         }
-        
+
         @media (max-width: 600px) {
             .tabs {
                 flex-wrap: wrap;
@@ -503,20 +489,27 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
     <script>
-        // Service Worker for PWA
+        // تسجيل الـ Service Worker لتفعيل PWA
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js').then(() => {
-                console.log("Service Worker Registered");
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registered successfully: ', registration);
+                    })
+                    .catch(error => {
+                        console.log('Service Worker registration failed: ', error);
+                    });
             });
         }
-        
+
+        // كود التعامل مع "Install Prompt"
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
           e.preventDefault();
           deferredPrompt = e;
           const installBtn = document.createElement('button');
           installBtn.innerText = '📲 تثبيت التطبيق';
-          installBtn.style.cssText = 'margin-top:10px; padding:8px 16px; font-size:16px;';
+          installBtn.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:1000; padding:12px 24px; font-size:18px; background-color:#2c3e50; color:#fff; border:none; border-radius:50px; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.2);';
           document.body.appendChild(installBtn);
           installBtn.addEventListener('click', () => {
             deferredPrompt.prompt();
@@ -527,6 +520,7 @@
                 console.log('User dismissed the install prompt');
               }
               deferredPrompt = null;
+              installBtn.style.display = 'none';
             });
           });
         });
@@ -582,40 +576,35 @@
         function formatPrimeFactorsWithHighlight(factors1, factors2) {
             const factors1Copy = [...factors1];
             const factors2Copy = [...factors2];
-            
+
             const result1 = [];
             const result2 = [];
             const commonFactors = [];
             const uncommonFactors = [];
 
-            const commonSet = new Set();
-            for(let f of factors1) {
+            factors1.forEach(f => {
                 const indexIn2 = factors2Copy.indexOf(f);
                 if (indexIn2 > -1) {
-                    commonSet.add(f);
-                    factors2Copy.splice(indexIn2, 1);
-                }
-            }
-            
-            factors1.forEach(f => {
-                const indexIn2 = factors2.indexOf(f);
-                if (commonSet.has(f) && indexIn2 > -1) {
                     result1.push(`<span class="prime-factor common-factor">${f}</span>`);
-                    result2.push(`<span class="prime-factor common-factor">${f}</span>`);
+                    factors2Copy.splice(indexIn2, 1);
                     commonFactors.push(f);
-                    factors2.splice(indexIn2, 1);
-                    commonSet.delete(f);
                 } else {
                     result1.push(`<span class="prime-factor uncommon-factor">${f}</span>`);
                     uncommonFactors.push(f);
                 }
             });
 
+            const factors2CopyForDisplay = [...factors2];
             factors2.forEach(f => {
-                result2.push(`<span class="prime-factor uncommon-factor">${f}</span>`);
-                uncommonFactors.push(f);
+                const indexIn1 = factors1.indexOf(f);
+                const indexInResult2 = result2.indexOf(f);
+                if (indexIn1 > -1 && indexInResult2 === -1) {
+                    result2.push(`<span class="prime-factor common-factor">${f}</span>`);
+                } else {
+                    result2.push(`<span class="prime-factor uncommon-factor">${f}</span>`);
+                }
             });
-            
+
             return {
                 html1: result1.join(' × '),
                 html2: result2.join(' × '),
@@ -623,7 +612,6 @@
                 uncommonFactors
             };
         }
-        
         function calculateFactors() {
             const num1 = parseInt(document.getElementById('num1-factors').value);
             const num2 = parseInt(document.getElementById('num2-factors').value);
@@ -929,7 +917,6 @@
         }
 
         // --- All Functions from Page 3 (Prime Numbers) ---
-        // Renamed function to avoid conflict with `isPrime`
         function iP(n) {
             if (n <= 1) return false;
             if (n <= 3) return true;
