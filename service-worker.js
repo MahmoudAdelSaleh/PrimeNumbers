@@ -1,14 +1,36 @@
-// تثبيت السيرفس وركر وتخطي الانتظار
+const CACHE_NAME = 'prime-numbers-cache-v1';
+const urlsToCache = [
+  '/',
+  '/index.html',
+  '/styles.css', // تأكد من وجود هذا الملف
+  '/script.js', // تأكد من وجود هذا الملف
+  '/manifest.json'
+];
+
 self.addEventListener('install', event => {
   self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => {
+        return cache.addAll(urlsToCache);
+      })
+  );
 });
 
-// تفعيل السيرفس وركر والسيطرة على الصفحات فورًا
 self.addEventListener('activate', event => {
   clients.claim();
 });
 
-// التعامل مع أي طلب (بدون كاش)، فقط تمريره مباشرة
 self.addEventListener('fetch', event => {
-  event.respondWith(fetch(event.request));
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => {
+        // إذا وجد الملف في الذاكرة المؤقتة، يتم إرجاعه
+        if (response) {
+          return response;
+        }
+        // وإلا، يتم طلبه من الشبكة
+        return fetch(event.request);
+      })
+  );
 });
